@@ -1220,9 +1220,10 @@
       </p>
 
       <div class="ticket-actions">
-        <button class="button secondary" id="downloadTicketsPDF" type="button">
-          Скачать билеты PDF <span class="arrow">↓</span>
-        </button>
+        <a class="button secondary" id="payFilmLink" href="#" target="_blank"
+           rel="noopener noreferrer">
+          Оплатить <span class="arrow">↗</span>
+        </a>
         <a class="button" id="ticketMapLink" href="#" target="_blank"
            rel="noopener noreferrer">
           Открыть карту <span class="arrow">↗</span>
@@ -1238,8 +1239,6 @@
       <span>Издано по личному поводу</span>
     </footer>
   </main>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.3/html2pdf.bundle.min.js"></script>
 
   <script>
     // Данные фильмов. Здесь можно менять описания, время и адреса.
@@ -1257,6 +1256,7 @@
         metro: "м. Гостиный двор",
         address: "Караванная, 12",
         map: "https://2gis.ru/spb/search/Дом%20кино%20Караванная%2012",
+        paymentUrl: 'https://afisha.yandex.ru/saint-petersburg/cinema/uchitel-obeshchavshiy-more#schedule',
         poster: "images/Учитель обещавший море.png"
       },
       {
@@ -1272,6 +1272,7 @@
         metro: "м. Адмиралтейская",
         address: "Малая Морская, 24",
         map: "https://2gis.ru/spb/search/Cin%C3%A9ma%20Mich%C3%A8le",
+        paymentUrl: 'https://afisha.yandex.ru/saint-petersburg/cinema/okno-vo-dvor#schedule',
         poster: "images/Окно во двор.png"
       },
       {
@@ -1287,6 +1288,7 @@
         metro: "м. Балтийская",
         address: "Набережная Обводного канала, 118",
         map: "https://2gis.ru/spb/search/КАРО%20набережная%20Обводного%20канала%20118",
+        paymentUrl: 'https://afisha.yandex.ru/saint-petersburg/cinema/donni-darko/?sessionKey=MTMxfDExNTkwOXw0NDgyNDkwfDE3OTI5NTMwMDAwMDA=',
         poster: "images/Донни Дарко.png"
       },
       {
@@ -1302,6 +1304,7 @@
         metro: "м. Гостиный двор",
         address: "Караванная, 12",
         map: "https://2gis.ru/spb/search/Дом%20кино%20Караванная%2012",
+        paymentUrl: 'https://afisha.yandex.ru/saint-petersburg/cinema/apokalipsis-segodnia#schedule',
         poster: "images/Апокалипсис сегодня.png"
       }
     ];
@@ -1448,56 +1451,8 @@
       }
 
       document.getElementById("ticketMapLink").href = film.map;
+      document.getElementById("payFilmLink").href = film.paymentUrl;
     }
-
-    // Сохраняем только сами билеты, без обложки и остальной страницы.
-    document.getElementById("downloadTicketsPDF").addEventListener("click", async () => {
-      const tickets = document.querySelector(".tickets");
-      const button = document.getElementById("downloadTicketsPDF");
-
-      if (!tickets || typeof html2pdf === "undefined") {
-        alert("Не удалось загрузить модуль PDF. Проверь подключение к интернету и попробуй ещё раз.");
-        return;
-      }
-
-      button.disabled = true;
-      const originalLabel = button.innerHTML;
-      button.innerHTML = "Подготовка PDF…";
-
-      try {
-        await html2pdf().set({
-          filename: "Приглашения-в-кино.pdf",
-          margin: [8, 8, 8, 8],
-          image: { type: "jpeg", quality: 0.98 },
-          html2canvas: {
-            scale: 2,
-            useCORS: true,
-            backgroundColor: "#ffffff",
-            scrollX: 0,
-            scrollY: 0,
-            onclone: (clonedDocument) => {
-              const clonedTickets = clonedDocument.querySelector(".tickets");
-              if (clonedTickets) {
-                clonedTickets.style.width = "1060px";
-                clonedTickets.style.gridTemplateColumns = "1fr 1fr";
-                clonedTickets.style.gap = "18px";
-              }
-              clonedDocument.querySelectorAll(".ticket").forEach(ticket => {
-                ticket.style.minHeight = "310px";
-              });
-            }
-          },
-          jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
-          pagebreak: { mode: ["css", "legacy"] }
-        }).from(tickets).save();
-      } catch (error) {
-        console.error("PDF export failed:", error);
-        alert("Не получилось создать PDF. Попробуй ещё раз.");
-      } finally {
-        button.disabled = false;
-        button.innerHTML = originalLabel;
-      }
-    });
 
     document.getElementById("restart").addEventListener("click", () => {
       currentIndex = 0;
