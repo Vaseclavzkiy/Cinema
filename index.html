@@ -1,0 +1,1540 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#171714">
+  <title>Пойдём в кино — выпуск № 001</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+    :root {
+      --bg: #171714;
+      --paper: #eee9dc;
+      --muted: #9d9a8e;
+      --acid: #d4ff3f;
+      --line: rgba(238, 233, 220, .22);
+      --serif: Georgia, "Times New Roman", serif;
+      --mono: "DM Mono", monospace;
+      --sans: "Manrope", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--bg);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(212, 255, 63, .045), transparent 45%),
+        var(--bg);
+      color: var(--paper);
+      font-family: var(--sans);
+    }
+
+    button {
+      font: inherit;
+    }
+
+    button:focus-visible,
+    a:focus-visible {
+      outline: 2px solid var(--acid);
+      outline-offset: 5px;
+    }
+
+    button:disabled {
+      opacity: .3;
+      cursor: not-allowed;
+    }
+
+    .page {
+      width: min(100% - 36px, 1100px);
+      min-height: 100svh;
+      margin: 0 auto;
+      padding: 24px 0 30px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--line);
+      font: 10px var(--mono);
+      letter-spacing: .11em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .topline strong {
+      color: var(--acid);
+      font-weight: 400;
+    }
+
+    .screen {
+      display: none;
+      flex: 1;
+      animation: appear .45s ease both;
+    }
+
+    .screen.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    @keyframes appear {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .eyebrow {
+      font: 11px var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--acid);
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      min-height: 50px;
+      padding: 14px 19px;
+      border: 1px solid var(--acid);
+      background: var(--acid);
+      color: var(--bg);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .035em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background .2s, color .2s, transform .2s;
+    }
+
+    .button:hover:not(:disabled) {
+      background: transparent;
+      color: var(--acid);
+      transform: translateY(-2px);
+    }
+
+    .button.secondary {
+      background: transparent;
+      color: var(--paper);
+      border-color: var(--line);
+    }
+
+    .button.secondary:hover:not(:disabled) {
+      border-color: var(--acid);
+      color: var(--acid);
+    }
+
+    .button .arrow {
+      font-size: 19px;
+      line-height: 1;
+    }
+
+    .button:disabled {
+      background: #35352d;
+      color: #858477;
+      border-color: #35352d;
+    }
+
+    /* ОБЛОЖКА */
+
+    .cover {
+      padding-top: 25px;
+      padding-bottom: 35px;
+    }
+
+    .cover-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      font: 10px var(--mono);
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .cover-meta span:last-child {
+      text-align: right;
+    }
+
+    .cover-headline {
+      position: relative;
+      z-index: 1;
+      margin: 0 0 -8px -5px;
+      font-size: clamp(64px, 13.2vw, 156px);
+      font-weight: 800;
+      line-height: .78;
+      letter-spacing: -.095em;
+      text-transform: uppercase;
+    }
+
+    .cover-headline span {
+      display: block;
+    }
+
+    .cover-headline .second-line {
+      color: var(--acid);
+      padding-left: clamp(12px, 9vw, 120px);
+    }
+
+    .cover-art {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr .8fr;
+      gap: 20px;
+      align-items: center;
+      min-height: 240px;
+      margin-top: 22px;
+      padding: clamp(20px, 5vw, 55px);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(135deg, rgba(212,255,63,.08), transparent 55%),
+        #20201b;
+    }
+
+    .cover-art::before {
+      content: "";
+      position: absolute;
+      width: 310px;
+      height: 310px;
+      right: -45px;
+      top: -70px;
+      border: 1px solid rgba(212,255,63,.45);
+      border-radius: 50%;
+      box-shadow:
+        0 0 0 23px rgba(212,255,63,.025),
+        0 0 0 48px rgba(212,255,63,.025),
+        0 0 0 75px rgba(212,255,63,.02);
+      pointer-events: none;
+    }
+
+    .cover-copy {
+      position: relative;
+      z-index: 1;
+    }
+
+    .cover-copy h2 {
+      max-width: 510px;
+      margin: 15px 0;
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: clamp(28px, 5vw, 52px);
+      line-height: .98;
+      letter-spacing: -.04em;
+    }
+
+    .cover-copy p {
+      max-width: 340px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    .cover-stamp {
+      position: relative;
+      z-index: 1;
+      justify-self: center;
+      width: min(100%, 225px);
+      aspect-ratio: 3 / 4;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 16px;
+      transform: rotate(5deg);
+      border: 1px solid rgba(238,233,220,.5);
+      background: var(--acid);
+      color: var(--bg);
+      box-shadow: 12px 14px 0 rgba(0,0,0,.2);
+    }
+
+    .stamp-top,
+    .stamp-bottom {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font: 9px var(--mono);
+      text-transform: uppercase;
+    }
+
+    .stamp-symbol {
+      align-self: center;
+      display: grid;
+      place-items: center;
+      width: 75%;
+      aspect-ratio: 1;
+      border: 1px solid var(--bg);
+      border-radius: 50%;
+      font-family: var(--serif);
+      font-size: clamp(75px, 12vw, 120px);
+      line-height: 1;
+      transform: rotate(-12deg);
+    }
+
+    .stamp-bottom {
+      align-items: end;
+    }
+
+    .stamp-bottom strong {
+      font-size: 20px;
+    }
+
+    .cover-bottom {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: 25px;
+      padding-top: 24px;
+    }
+
+    .contents {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px 20px;
+    }
+
+    .contents-item {
+      display: flex;
+      gap: 10px;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .contents-item span {
+      color: var(--acid);
+      font-family: var(--mono);
+    }
+
+    .contents-title {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font: 10px var(--mono);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    /* СТРАНИЦЫ ФИЛЬМОВ */
+
+    .reader {
+      padding-top: 25px;
+      padding-bottom: 25px;
+    }
+
+    .reader-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 17px;
+    }
+
+    .progress-label {
+      font: 11px var(--mono);
+      color: var(--muted);
+      letter-spacing: .06em;
+    }
+
+    .progress-label strong {
+      color: var(--paper);
+      font-weight: 400;
+    }
+
+    .progress-track {
+      height: 2px;
+      margin-bottom: 25px;
+      background: #36362f;
+    }
+
+    .progress-fill {
+      width: 25%;
+      height: 100%;
+      background: var(--acid);
+      transition: width .35s ease;
+    }
+
+    .film-layout {
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(0, 1fr);
+      gap: clamp(25px, 6vw, 70px);
+      align-items: center;
+      flex: 1;
+    }
+
+    .poster-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 440px;
+      justify-self: center;
+      background: #272720;
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+
+    .poster-wrap img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
+      transition: transform .6s ease;
+    }
+
+    .poster-wrap:hover img {
+      transform: scale(1.025);
+    }
+
+    .poster-index {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      padding: 7px 9px;
+      background: var(--acid);
+      color: var(--bg);
+      font: 10px var(--mono);
+    }
+
+    .film-info {
+      padding: 8px 0;
+    }
+
+    .film-category {
+      margin-bottom: 14px;
+      font: 10px var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--acid);
+    }
+
+    .film-title {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 62px);
+      font-weight: 700;
+      line-height: .98;
+      letter-spacing: -.065em;
+      overflow-wrap: anywhere;
+    }
+
+    .film-year {
+      margin-top: 12px;
+      color: var(--muted);
+      font: 11px var(--mono);
+    }
+
+    .film-description {
+      margin: 22px 0;
+      max-width: 500px;
+      font-family: var(--serif);
+      font-size: clamp(16px, 2vw, 20px);
+      line-height: 1.55;
+      color: #d2cdbf;
+    }
+
+    .film-facts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      padding: 18px 0;
+      margin-bottom: 20px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .fact-label {
+      margin-bottom: 7px;
+      color: var(--muted);
+      font: 10px var(--mono);
+      text-transform: uppercase;
+    }
+
+    .fact-value {
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .film-location {
+      display: grid;
+      gap: 5px;
+      margin-bottom: 23px;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .film-location a {
+      width: fit-content;
+      color: var(--acid);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 4px;
+    }
+
+    .select-film {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 16px;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--paper);
+      text-align: left;
+      cursor: pointer;
+      transition: border .2s, background .2s;
+    }
+
+    .select-film:hover {
+      border-color: var(--acid);
+    }
+
+    .select-film[aria-pressed="true"] {
+      border-color: var(--acid);
+      background: rgba(212,255,63,.07);
+    }
+
+    .checkmark {
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      width: 23px;
+      height: 23px;
+      border: 1px solid var(--muted);
+      color: var(--bg);
+      font-size: 15px;
+    }
+
+    .select-film[aria-pressed="true"] .checkmark {
+      background: var(--acid);
+      border-color: var(--acid);
+    }
+
+    .select-copy {
+      flex: 1;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .select-status {
+      color: var(--muted);
+      font: 9px var(--mono);
+      text-transform: uppercase;
+    }
+
+    .reader-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin-top: 28px;
+      padding-top: 17px;
+      border-top: 1px solid var(--line);
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .icon-button {
+      display: grid;
+      place-items: center;
+      width: 45px;
+      height: 45px;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--paper);
+      font-size: 20px;
+      cursor: pointer;
+      transition: border .2s, color .2s;
+    }
+
+    .icon-button:hover:not(:disabled) {
+      border-color: var(--acid);
+      color: var(--acid);
+    }
+
+    .confirm-button {
+      min-height: 45px;
+      padding: 12px 15px;
+      font-size: 10px;
+    }
+
+    .error-message {
+      min-height: 18px;
+      margin-top: 9px;
+      color: var(--acid);
+      font-size: 11px;
+    }
+
+    /* ПОДТВЕРЖДЕНИЕ */
+
+    .interstitial {
+      justify-content: center;
+      padding: 50px 0;
+    }
+
+    .interstitial-inner {
+      width: min(100%, 690px);
+      margin: auto;
+    }
+
+    .big-number {
+      margin: 20px 0;
+      color: var(--acid);
+      font: 11px var(--mono);
+      letter-spacing: .12em;
+    }
+
+    .interstitial h1 {
+      max-width: 720px;
+      margin: 0;
+      font-size: clamp(54px, 11vw, 110px);
+      line-height: .86;
+      letter-spacing: -.09em;
+      text-transform: uppercase;
+    }
+
+    .interstitial h1 em {
+      color: var(--acid);
+      font-family: var(--serif);
+      font-weight: 400;
+      text-transform: none;
+    }
+
+    .interstitial p {
+      max-width: 460px;
+      margin: 28px 0;
+      color: var(--muted);
+      font-family: var(--serif);
+      font-size: 19px;
+      line-height: 1.65;
+    }
+
+    .selected-summary {
+      display: flex;
+      gap: 17px;
+      align-items: center;
+      padding: 15px;
+      margin: 28px 0;
+      border: 1px solid var(--line);
+    }
+
+    .selected-summary img {
+      width: 70px;
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
+    }
+
+    .selected-summary strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 16px;
+    }
+
+    .selected-summary span {
+      color: var(--muted);
+      font: 10px var(--mono);
+      line-height: 1.8;
+    }
+
+    /* ФИНАЛЬНЫЕ БИЛЕТЫ */
+
+    .ticket-screen {
+      padding-top: 28px;
+      padding-bottom: 35px;
+    }
+
+    .ticket-intro {
+      margin: 26px 0 30px;
+    }
+
+    .ticket-intro h1 {
+      margin: 12px 0;
+      font-size: clamp(44px, 8vw, 85px);
+      line-height: .9;
+      letter-spacing: -.08em;
+      text-transform: uppercase;
+    }
+
+    .ticket-intro h1 span {
+      color: var(--acid);
+      font-family: var(--serif);
+      font-weight: 400;
+      text-transform: none;
+    }
+
+    .ticket-intro p {
+      color: var(--muted);
+      font-family: var(--serif);
+      font-size: 17px;
+      line-height: 1.6;
+    }
+
+    .tickets {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .ticket {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 76px;
+      min-width: 0;
+      min-height: 310px;
+      background: var(--paper);
+      color: var(--bg);
+      overflow: hidden;
+    }
+
+    .ticket-main {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      padding: clamp(15px, 3vw, 25px);
+    }
+
+    .ticket-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(23,23,20,.28);
+      font: 9px var(--mono);
+      text-transform: uppercase;
+    }
+
+    .ticket-label strong {
+      color: #4d5f0a;
+    }
+
+    .ticket-film-title {
+      margin: 22px 0 8px;
+      font-size: clamp(20px, 3vw, 34px);
+      line-height: .98;
+      letter-spacing: -.06em;
+      overflow-wrap: anywhere;
+    }
+
+    .ticket-film-year {
+      color: #656459;
+      font: 10px var(--mono);
+    }
+
+    .ticket-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px 10px;
+      margin-top: auto;
+      padding-top: 23px;
+    }
+
+    .ticket-details .fact-label {
+      color: #69695e;
+      font-size: 9px;
+    }
+
+    .ticket-details .fact-value {
+      font-size: 11px;
+      overflow-wrap: anywhere;
+    }
+
+    .ticket-details a {
+      color: inherit;
+      text-underline-offset: 3px;
+    }
+
+    .ticket-stub {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 17px 8px;
+      border-left: 1px dashed rgba(23,23,20,.45);
+      text-align: center;
+    }
+
+    .ticket-stub span {
+      font: 8px var(--mono);
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      writing-mode: vertical-rl;
+    }
+
+    .ticket-stub strong {
+      font: 12px var(--mono);
+    }
+
+    .ticket-stub .ticket-star {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--bg);
+      border-radius: 50%;
+      font-size: 21px;
+    }
+
+    .ticket-note {
+      margin: 20px 0 0;
+      color: var(--muted);
+      font: 10px var(--mono);
+      line-height: 1.8;
+      text-align: center;
+    }
+
+    .ticket-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 26px;
+    }
+
+    .ticket-actions .button {
+      flex: 1;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: auto;
+      padding-top: 20px;
+      color: var(--muted);
+      font: 9px var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .07em;
+    }
+
+    .footer span:last-child {
+      text-align: right;
+    }
+
+    @media (min-width: 900px) {
+      .cover {
+        padding-top: 35px;
+      }
+
+      .cover-art {
+        min-height: 330px;
+      }
+
+      .film-layout {
+        padding: 10px 0;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .page {
+        width: min(100% - 28px, 520px);
+        padding-top: 17px;
+      }
+
+      .cover-headline {
+        font-size: clamp(57px, 17vw, 100px);
+      }
+
+      .cover-art {
+        grid-template-columns: 1fr .75fr;
+        gap: 10px;
+        min-height: 215px;
+        padding: 18px 13px;
+      }
+
+      .cover-copy h2 {
+        font-size: clamp(24px, 7vw, 37px);
+      }
+
+      .cover-copy p {
+        font-size: 11px;
+      }
+
+      .cover-stamp {
+        width: 100%;
+        padding: 9px;
+      }
+
+      .stamp-symbol {
+        font-size: 65px;
+      }
+
+      .stamp-top,
+      .stamp-bottom {
+        font-size: 7px;
+      }
+
+      .stamp-bottom strong {
+        font-size: 15px;
+      }
+
+      .cover-bottom {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .contents {
+        gap: 8px 12px;
+      }
+
+      .film-layout {
+        grid-template-columns: 1fr;
+        gap: 23px;
+        align-items: start;
+      }
+
+      .poster-wrap {
+        width: min(100%, 350px);
+      }
+
+      .film-info {
+        padding: 0;
+      }
+
+      .film-title {
+        font-size: clamp(37px, 10vw, 55px);
+      }
+
+      .film-description {
+        margin: 17px 0;
+        font-size: 17px;
+      }
+
+      .reader-bottom {
+        flex-wrap: wrap;
+      }
+
+      .nav-buttons {
+        order: 1;
+      }
+
+      .confirm-button {
+        flex: 1;
+        order: 2;
+      }
+
+      .ticket-intro {
+        margin: 24px 0;
+      }
+
+      .tickets {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .ticket {
+        min-height: 270px;
+        grid-template-columns: 1fr 68px;
+      }
+
+      .ticket-film-title {
+        font-size: 29px;
+      }
+
+      .ticket-actions {
+        flex-direction: column;
+      }
+
+      .ticket-actions .button {
+        width: 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <header class="topline">
+      <span><strong>КИНО / КЛУБ</strong> — независимое издание</span>
+      <span>Выпуск № 001 · Воскресенье</span>
+    </header>
+
+    <!-- 01. ОБЛОЖКА -->
+    <section class="screen active cover" id="cover">
+      <div class="cover-meta">
+        <span>Специальный выпуск</span>
+        <span>Четыре фильма. Один вечер.</span>
+      </div>
+
+      <h1 class="cover-headline">
+        <span>Пойдём</span>
+        <span class="second-line">в кино.</span>
+      </h1>
+
+      <div class="cover-art">
+        <div class="cover-copy">
+          <div class="eyebrow">Главная тема номера</div>
+          <h2>Что сегодня можно посмотреть в кино?</h2>
+          <p>
+            Четыре фильма, четыре разных способа провести воскресенье.
+            Один из них — наш.
+          </p>
+        </div>
+
+        <div class="cover-stamp" aria-label="Графическая обложка выпуска">
+          <div class="stamp-top">
+            <span>Sunday</span>
+            <span>001</span>
+          </div>
+          <div class="stamp-symbol">✳</div>
+          <div class="stamp-bottom">
+            <span>Кино<br>и немного нас</span>
+            <strong>№ 01</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="cover-bottom">
+        <div>
+          <p class="contents-title">Содержание номера</p>
+          <div class="contents">
+            <div class="contents-item"><span>01</span> Учитель, который обещал море</div>
+            <div class="contents-item"><span>02</span> Окно во двор</div>
+            <div class="contents-item"><span>03</span> Донни Дарко</div>
+            <div class="contents-item"><span>04</span> Апокалипсис сегодня</div>
+          </div>
+        </div>
+
+        <button class="button" id="openMagazine">
+          Открыть журнал <span class="arrow">→</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 02. ЖУРНАЛ С ФИЛЬМАМИ -->
+    <section class="screen reader" id="reader">
+      <div class="reader-head">
+        <span class="eyebrow">Киногид / Воскресенье</span>
+        <span class="progress-label">
+          ФИЛЬМ <strong id="currentNumber">01</strong> / 04
+        </span>
+      </div>
+
+      <div class="progress-track" aria-hidden="true">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+      <div class="film-layout" id="filmLayout">
+        <div class="poster-wrap">
+          <img id="filmPoster" src="images/Учитель обещавший море.png"
+               alt="Постер фильма">
+          <span class="poster-index" id="posterIndex">№ 01 / 04</span>
+        </div>
+
+        <article class="film-info">
+          <div class="film-category" id="filmCategory">01 — Тихая история</div>
+          <h2 class="film-title" id="filmTitle">Учитель, который обещал море</h2>
+          <div class="film-year" id="filmYear">ИСПАНИЯ · 2023</div>
+
+          <p class="film-description" id="filmDescription"></p>
+
+          <div class="film-facts">
+            <div>
+              <div class="fact-label">Длительность</div>
+              <div class="fact-value" id="filmDuration"></div>
+            </div>
+            <div>
+              <div class="fact-label">Сеанс</div>
+              <div class="fact-value" id="filmTime"></div>
+            </div>
+          </div>
+
+          <div class="film-location">
+            <div id="filmVenue"></div>
+            <div id="filmMetro" class="muted"></div>
+            <a id="filmMap" href="#" target="_blank" rel="noopener noreferrer">
+              Посмотреть на карте ↗
+            </a>
+          </div>
+
+          <button class="select-film" id="selectFilm" aria-pressed="false">
+            <span class="checkmark" id="checkmark"></span>
+            <span class="select-copy" id="selectCopy">Оставить этот фильм</span>
+            <span class="select-status" id="selectStatus">Не выбран</span>
+          </button>
+          <div class="error-message" id="readerError" aria-live="polite"></div>
+        </article>
+      </div>
+
+      <div class="reader-bottom">
+        <div class="nav-buttons">
+          <button class="icon-button" id="prevFilm" aria-label="Предыдущий фильм">←</button>
+          <button class="icon-button" id="nextFilm" aria-label="Следующий фильм">→</button>
+        </div>
+
+        <button class="button confirm-button" id="confirmChoice">
+          Подтвердить выбор <span class="arrow">→</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 03. ПОДТВЕРЖДЕНИЕ -->
+    <section class="screen interstitial" id="confirmation">
+      <div class="interstitial-inner">
+        <div class="eyebrow">Редакция одобряет</div>
+        <div class="big-number">ВЫБОР ЗАФИКСИРОВАН / 001</div>
+        <h1>Отлично.<br><em>Решено.</em></h1>
+        <p>
+          Теперь у воскресенья есть план. Осталось открыть билеты
+          и проверить, куда мы идём.
+        </p>
+
+        <div class="selected-summary">
+          <img id="summaryPoster" src="" alt="">
+          <div>
+            <strong id="summaryTitle"></strong>
+            <span id="summaryDetails"></span>
+          </div>
+        </div>
+
+        <button class="button" id="showTickets">
+          Открыть билеты <span class="arrow">→</span>
+        </button>
+        <button class="button secondary" id="editChoice" style="margin-top: 10px;">
+          Передумать и выбрать другой фильм
+        </button>
+      </div>
+    </section>
+
+    <!-- 04. ФИНАЛ: ДВА БИЛЕТА -->
+    <section class="screen ticket-screen" id="finale">
+      <div class="ticket-intro">
+        <div class="eyebrow">Sunday screening · Билет № 001</div>
+        <h1>Увидимся<br><span>в кино.</span></h1>
+        <p>Один вечер, два билета и никакой необходимости придумывать другой план.</p>
+      </div>
+
+      <div class="tickets">
+        <article class="ticket">
+          <div class="ticket-main">
+            <div class="ticket-label">
+              <span>Sunday screening</span>
+              <strong>Билет 01</strong>
+            </div>
+            <h2 class="ticket-film-title" id="ticketTitle1"></h2>
+            <div class="ticket-film-year" id="ticketYear1"></div>
+
+            <div class="ticket-details">
+              <div>
+                <div class="fact-label">Дата</div>
+                <div class="fact-value" id="ticketDate1">Воскресенье</div>
+              </div>
+              <div>
+                <div class="fact-label">Начало</div>
+                <div class="fact-value" id="ticketTime1"></div>
+              </div>
+              <div>
+                <div class="fact-label">Кинотеатр</div>
+                <div class="fact-value" id="ticketVenue1"></div>
+              </div>
+              <div>
+                <div class="fact-label">Длительность</div>
+                <div class="fact-value" id="ticketDuration1"></div>
+              </div>
+            </div>
+          </div>
+          <div class="ticket-stub">
+            <span>Admit one · Sunday</span>
+            <div class="ticket-star">✳</div>
+            <strong>001</strong>
+            <span>Приглашение</span>
+          </div>
+        </article>
+
+        <article class="ticket">
+          <div class="ticket-main">
+            <div class="ticket-label">
+              <span>Sunday screening</span>
+              <strong>Билет 02</strong>
+            </div>
+            <h2 class="ticket-film-title" id="ticketTitle2"></h2>
+            <div class="ticket-film-year" id="ticketYear2"></div>
+
+            <div class="ticket-details">
+              <div>
+                <div class="fact-label">Дата</div>
+                <div class="fact-value" id="ticketDate2">Воскресенье</div>
+              </div>
+              <div>
+                <div class="fact-label">Начало</div>
+                <div class="fact-value" id="ticketTime2"></div>
+              </div>
+              <div>
+                <div class="fact-label">Кинотеатр</div>
+                <div class="fact-value" id="ticketVenue2"></div>
+              </div>
+              <div>
+                <div class="fact-label">Длительность</div>
+                <div class="fact-value" id="ticketDuration2"></div>
+              </div>
+            </div>
+          </div>
+          <div class="ticket-stub">
+            <span>Admit one · Sunday</span>
+            <div class="ticket-star">✳</div>
+            <strong>002</strong>
+            <span>Приглашение</span>
+          </div>
+        </article>
+      </div>
+
+      <p class="ticket-note">
+        ЭТО ПРИГЛАШЕНИЕ, А НЕ БИЛЕТ КИНОТЕАТРА.<br>
+        СЕАНС И МЕСТА НУЖНО ПРОВЕРИТЬ И ЗАБРОНИРОВАТЬ ОТДЕЛЬНО.
+      </p>
+
+      <div class="ticket-actions">
+        <button class="button secondary" id="downloadTicketsPDF" type="button">
+          Скачать билеты PDF <span class="arrow">↓</span>
+        </button>
+        <a class="button" id="ticketMapLink" href="#" target="_blank"
+           rel="noopener noreferrer">
+          Открыть карту <span class="arrow">↗</span>
+        </a>
+        <button class="button secondary" id="restart">
+          Перечитать журнал ↺
+        </button>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span>КИНО / КЛУБ — № 001</span>
+      <span>Издано по личному поводу</span>
+    </footer>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.3/html2pdf.bundle.min.js"></script>
+
+  <script>
+    // Данные фильмов. Здесь можно менять описания, время и адреса.
+    const films = [
+      {
+        title: "Учитель, который обещал море",
+        shortTitle: "Учитель, который обещал море",
+        year: "ИСПАНИЯ · 2023",
+        category: "01 — Тихая история",
+        description:
+          "Испания, 1930-е годы. Молодой учитель приезжает в деревню и показывает детям, что учёба может быть приключением, а мир гораздо больше их поселения. Но за пределами школы уже сгущается тьма.",
+        duration: "105 минут",
+        time: "19:20",
+        venue: "Дом кино",
+        metro: "м. Гостиный двор",
+        address: "Караванная, 12",
+        map: "https://2gis.ru/spb/search/Дом%20кино%20Караванная%2012",
+        poster: "images/Учитель обещавший море.png"
+      },
+      {
+        title: "Окно во двор",
+        shortTitle: "Окно во двор",
+        year: "США · 1954",
+        category: "02 — Подозрительные соседи",
+        description:
+          "Фотограф со сломанной ногой наблюдает за соседями из окна и начинает подозревать, что в одном из домов произошло убийство. Чем внимательнее он следит за чужой жизнью, тем сложнее отличить реальные улики от собственных догадок.",
+        duration: "112 минут",
+        time: "20:00",
+        venue: "Cinéma Michèle",
+        metro: "м. Адмиралтейская",
+        address: "Малая Морская, 24",
+        map: "https://2gis.ru/spb/search/Cin%C3%A9ma%20Mich%C3%A8le",
+        poster: "images/Окно во двор.png"
+      },
+      {
+        title: "Донни Дарко",
+        shortTitle: "Донни Дарко",
+        year: "США · 2001",
+        category: "03 — Странная реальность",
+        description:
+          "После падения авиационного двигателя на его дом подросток Донни начинает видеть загадочного человека в костюме кролика, предсказывающего конец света через 28 дней. Попытки разобраться ведут к теориям о путешествиях во времени и параллельных вселенных.",
+        duration: "113 минут",
+        time: "21:30",
+        venue: "КАРО",
+        metro: "м. Балтийская",
+        address: "Набережная Обводного канала, 118",
+        map: "https://2gis.ru/spb/search/КАРО%20набережная%20Обводного%20канала%20118",
+        poster: "images/Донни Дарко.png"
+      },
+      {
+        title: "Апокалипсис сегодня",
+        shortTitle: "Апокалипсис сегодня",
+        year: "США · 1979",
+        category: "04 — Путешествие во тьму",
+        description:
+          "Во время войны во Вьетнаме капитан Уиллард отправляется вглубь джунглей, чтобы ликвидировать полковника Курца, который вышел из-под контроля и стал для местных жителей подобием божества. Экспедиция превращается в путешествие через абсурд войны и человеческое безумие.",
+        duration: "147 минут",
+        time: "20:35",
+        venue: "Дом кино",
+        metro: "м. Гостиный двор",
+        address: "Караванная, 12",
+        map: "https://2gis.ru/spb/search/Дом%20кино%20Караванная%2012",
+        poster: "images/Апокалипсис сегодня.png"
+      }
+    ];
+
+    let currentIndex = 0;
+    let selectedIndex = null;
+
+    const screens = {
+      cover: document.getElementById("cover"),
+      reader: document.getElementById("reader"),
+      confirmation: document.getElementById("confirmation"),
+      finale: document.getElementById("finale")
+    };
+
+    function showScreen(screenName) {
+      Object.entries(screens).forEach(([name, element]) => {
+        element.classList.toggle("active", name === screenName);
+      });
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function renderFilm() {
+      const film = films[currentIndex];
+
+      document.getElementById("currentNumber").textContent =
+        String(currentIndex + 1).padStart(2, "0");
+
+      document.getElementById("progressFill").style.width =
+        `${((currentIndex + 1) / films.length) * 100}%`;
+
+      document.getElementById("filmPoster").src = film.poster;
+      document.getElementById("filmPoster").alt = `Постер: ${film.title}`;
+      document.getElementById("posterIndex").textContent =
+        `№ ${String(currentIndex + 1).padStart(2, "0")} / 04`;
+
+      document.getElementById("filmCategory").textContent = film.category;
+      document.getElementById("filmTitle").textContent = film.title;
+      document.getElementById("filmYear").textContent = film.year;
+      document.getElementById("filmDescription").textContent = film.description;
+      document.getElementById("filmDuration").textContent = film.duration;
+      document.getElementById("filmTime").textContent = film.time;
+      document.getElementById("filmVenue").textContent = film.venue;
+      document.getElementById("filmMetro").textContent =
+        `${film.metro} · ${film.address}`;
+
+      const mapLink = document.getElementById("filmMap");
+      mapLink.href = film.map;
+
+      const isSelected = selectedIndex === currentIndex;
+      const selectButton = document.getElementById("selectFilm");
+
+      selectButton.setAttribute("aria-pressed", String(isSelected));
+      document.getElementById("checkmark").textContent = isSelected ? "✓" : "";
+      document.getElementById("selectCopy").textContent = isSelected
+        ? "Этот фильм выбран"
+        : "Оставить этот фильм";
+      document.getElementById("selectStatus").textContent = isSelected
+        ? "Мой выбор"
+        : "Не выбран";
+
+      document.getElementById("prevFilm").disabled = currentIndex === 0;
+      document.getElementById("nextFilm").disabled =
+        currentIndex === films.length - 1;
+
+      document.getElementById("readerError").textContent = "";
+    }
+
+    function moveFilm(direction) {
+      const nextIndex = currentIndex + direction;
+
+      if (nextIndex < 0 || nextIndex >= films.length) return;
+
+      currentIndex = nextIndex;
+      renderFilm();
+    }
+
+    document.getElementById("openMagazine").addEventListener("click", () => {
+      currentIndex = 0;
+      renderFilm();
+      showScreen("reader");
+    });
+
+    document.getElementById("prevFilm").addEventListener("click", () => {
+      moveFilm(-1);
+    });
+
+    document.getElementById("nextFilm").addEventListener("click", () => {
+      moveFilm(1);
+    });
+
+    document.getElementById("selectFilm").addEventListener("click", () => {
+      // Повторное нажатие снимает выбор.
+      selectedIndex = selectedIndex === currentIndex ? null : currentIndex;
+      renderFilm();
+    });
+
+    document.getElementById("confirmChoice").addEventListener("click", () => {
+      if (selectedIndex === null) {
+        document.getElementById("readerError").textContent =
+          "Сначала отметь фильм, который хочешь посмотреть.";
+        return;
+      }
+
+      renderConfirmation();
+      showScreen("confirmation");
+    });
+
+    function renderConfirmation() {
+      const film = films[selectedIndex];
+
+      document.getElementById("summaryPoster").src = film.poster;
+      document.getElementById("summaryPoster").alt = film.title;
+      document.getElementById("summaryTitle").textContent = film.title;
+      document.getElementById("summaryDetails").textContent =
+        `${film.time} · ${film.venue} · ${film.duration}`;
+    }
+
+    document.getElementById("editChoice").addEventListener("click", () => {
+      currentIndex = selectedIndex ?? 0;
+      renderFilm();
+      showScreen("reader");
+    });
+
+    document.getElementById("showTickets").addEventListener("click", () => {
+      renderTickets();
+      showScreen("finale");
+    });
+
+    function renderTickets() {
+      const film = films[selectedIndex];
+
+      for (const number of [1, 2]) {
+        document.getElementById(`ticketTitle${number}`).textContent =
+          film.shortTitle;
+        document.getElementById(`ticketYear${number}`).textContent =
+          film.year;
+        document.getElementById(`ticketTime${number}`).textContent =
+          film.time;
+        document.getElementById(`ticketVenue${number}`).textContent =
+          film.venue;
+        document.getElementById(`ticketDuration${number}`).textContent =
+          film.duration;
+      }
+
+      document.getElementById("ticketMapLink").href = film.map;
+    }
+
+    // Сохраняем только сами билеты, без обложки и остальной страницы.
+    document.getElementById("downloadTicketsPDF").addEventListener("click", async () => {
+      const tickets = document.querySelector(".tickets");
+      const button = document.getElementById("downloadTicketsPDF");
+
+      if (!tickets || typeof html2pdf === "undefined") {
+        alert("Не удалось загрузить модуль PDF. Проверь подключение к интернету и попробуй ещё раз.");
+        return;
+      }
+
+      button.disabled = true;
+      const originalLabel = button.innerHTML;
+      button.innerHTML = "Подготовка PDF…";
+
+      try {
+        await html2pdf().set({
+          filename: "Приглашения-в-кино.pdf",
+          margin: [8, 8, 8, 8],
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: "#ffffff",
+            scrollX: 0,
+            scrollY: 0,
+            onclone: (clonedDocument) => {
+              const clonedTickets = clonedDocument.querySelector(".tickets");
+              if (clonedTickets) {
+                clonedTickets.style.width = "1060px";
+                clonedTickets.style.gridTemplateColumns = "1fr 1fr";
+                clonedTickets.style.gap = "18px";
+              }
+              clonedDocument.querySelectorAll(".ticket").forEach(ticket => {
+                ticket.style.minHeight = "310px";
+              });
+            }
+          },
+          jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
+          pagebreak: { mode: ["css", "legacy"] }
+        }).from(tickets).save();
+      } catch (error) {
+        console.error("PDF export failed:", error);
+        alert("Не получилось создать PDF. Попробуй ещё раз.");
+      } finally {
+        button.disabled = false;
+        button.innerHTML = originalLabel;
+      }
+    });
+
+    document.getElementById("restart").addEventListener("click", () => {
+      currentIndex = 0;
+      selectedIndex = null;
+      renderFilm();
+      showScreen("cover");
+    });
+
+    // Перелистывание свайпом на телефоне.
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    const filmLayout = document.getElementById("filmLayout");
+
+    filmLayout.addEventListener("touchstart", event => {
+      touchStartX = event.changedTouches[0].screenX;
+      touchStartY = event.changedTouches[0].screenY;
+    }, { passive: true });
+
+    filmLayout.addEventListener("touchend", event => {
+      const dx = event.changedTouches[0].screenX - touchStartX;
+      const dy = event.changedTouches[0].screenY - touchStartY;
+
+      if (Math.abs(dx) > 65 && Math.abs(dx) > Math.abs(dy) * 1.25) {
+        moveFilm(dx < 0 ? 1 : -1);
+      }
+    }, { passive: true });
+
+    // Стрелки клавиатуры работают на странице просмотра фильмов.
+    document.addEventListener("keydown", event => {
+      if (!screens.reader.classList.contains("active")) return;
+
+      if (event.key === "ArrowRight") moveFilm(1);
+      if (event.key === "ArrowLeft") moveFilm(-1);
+    });
+
+    renderFilm();
+  </script>
+</body>
+</html>
